@@ -195,7 +195,8 @@ class SuperPointTF(tf.keras.Model):
         x = self.relu(self.conv3b(x))
         x = self.pool(x)
         x = self.relu(self.conv4a(x))
-        return self.relu(self.conv4b(x))
+        x = self.conv4b(x)
+        return self.relu(x)
 
     def call_dense_descriptor(self, x):
         # Compute the dense descriptors
@@ -251,6 +252,7 @@ class SuperPointTF(tf.keras.Model):
             weight = state_dict[f"{name}.weight"].transpose([2, 3, 1, 0])
             bias = state_dict[f"{name}.bias"]
             conv_layer.set_weights([weight, bias])
+        return self
 
     def remove_borders(self, keypoints, scores, height, width):
         """Removes keypoints too close to the border"""
